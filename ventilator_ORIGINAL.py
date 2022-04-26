@@ -3,6 +3,7 @@ import nidaqmx
 from nidaqmx.constants import(LineGrouping)
 import time
 import numpy as np
+#import transducerDriver as pressure
 
 state_sys = 1
 
