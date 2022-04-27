@@ -8,9 +8,13 @@ def pressureTransducer():
     pSenTask.ai_channels.add_ai_func_gen_chan(port)
     pSenTask.start()
     dataIN = pSenTask.read()
-    #Map values fro 0 - 5 Vdc to 5 - 1000 psia
-    conv = np.interp(dataIN,[5,1000],[0,5])
-    return conv
+    #Map values using calibration function (to psia)
+    convertPSIG = (150.18 * dataIN) + 0.1156
+    convertcmH20 = convertPSIG * 70.307
+    pSenTask.stop
+    pSenTask.close()
+    return convertcmH20
+
 
 	
 
