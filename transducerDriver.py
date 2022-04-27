@@ -1,4 +1,6 @@
 import numpy as np
+import nidaqmx
+from nidaqmx.constants import LineGrouping
 
 def pressureTransducer():
     #Create task 
