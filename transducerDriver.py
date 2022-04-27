@@ -5,7 +5,7 @@ def pressureTransducer():
     pSenTask = nidaqmx.Task()
     #IO
     port = "Dev1/port0/line0"
-    pSenTask.do_channels.add_do_chan(port)
+    pSenTask.ai_channels.add_ai_func_gen_chan(port)
     pSenTask.start()
     dataIN = pSenTask.read()
     #Map values fro 0 - 5 Vdc to 5 - 1000 psia
