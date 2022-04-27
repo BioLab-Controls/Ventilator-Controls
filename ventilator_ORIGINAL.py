@@ -12,6 +12,7 @@ def PWM(values, motor, runtime):
 	toggle = True
 	
 	task_PWM = nidaqmx.Task()
+	task_INP = nidaqmx.Task()
 	
 	if motor == 0:
 		task_PWM.do_channels.add_do_chan("Dev1/port0/line0")
@@ -19,7 +20,7 @@ def PWM(values, motor, runtime):
 		task_PWM.do_channels.add_do_chan("Dev1/port0/line1")
 	
 	task_PWM.start()
-	
+
 	time_init = time.time()
 	
 	while toggle:
@@ -29,7 +30,7 @@ def PWM(values, motor, runtime):
 				task_PWM.write(True)
 			else:
 				task_PWM.write(False)
-				
+        
 		i = 0
 
 		if ((time.time() - time_init) >= runtime):
@@ -38,10 +39,12 @@ def PWM(values, motor, runtime):
 			task_PWM.stop
 			task_PWM.close()
 
+			ask_PWM.close()
+
 def switch_valves(state_sys_local):
 
 	task_val = nidaqmx.Task()
-	task_val.do_channels.add_do_chan("Dev1/port1/line0:1", line_grouping=LineGrouping.CHAN_PER_LINE)
+	task_val.do_channels.add_do_chan("Dev1/port1/line2:3", line_grouping=LineGrouping.CHAN_PER_LINE)
 	task_val.start()
 	
 	global state_sys
