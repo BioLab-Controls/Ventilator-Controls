@@ -6,8 +6,8 @@ def pressureTransducer():
     #Create task 
     pSenTask = nidaqmx.Task()
     #IO
-    port = "Dev1/port0/line0"
-    pSenTask.ai_channels.add_ai_func_gen_chan(port)
+    port = "Dev1/port1/line1"
+    pSenTask.di_channels.add_di_chan(port)
     pSenTask.start()
     dataIN = pSenTask.read()
     #Map values using calibration function (to psia)
@@ -18,10 +18,6 @@ def pressureTransducer():
     return convertcmH20
 
 
-	
-
-
-
-
-
-
+def loopData():
+    while True:
+        print(pressureTransducer())
