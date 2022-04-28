@@ -4,7 +4,6 @@ import time
 import numpy as np
 
 def dataCollect():
-    toggle = True
     
     task_dataA = nidaqmx.Task()
     portA = "Dev1/ctr0"
