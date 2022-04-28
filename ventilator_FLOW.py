@@ -8,28 +8,20 @@ import transducerDriver as pressure
 
 state_sys = 1
 '''
-Code runs the pumps, fills and empties, and records 0s from flow sensor in the terminal.
-Occasionally reports a 1 when filling is complete.
+UPDATES: Code currently receives True/False datapoints when passing through the sensor.
+Prints to console slower than freqency, need new way to analyze individual points.
 '''
 
 def dataCollect():
-    
-    task_dataA = nidaqmx.Task()
-    portA = "Dev1/ctr0"
-    task_dataA.ci_channels.add_ci_count_edges_chan(portA)
-    freqA = task_dataA.read()
-    task_dataA.stop
-    task_dataA.close()
-    
-    #task_dataB = nidaqmx.Task()
-    #portB = "Dev1/ctr1"
-    #task_dataB.ci_channels.add_ci_count_edges_chan(portB)
-    #freqB = task_dataB.read()
-    #task_dataB.stop
-    #task_dataB.close()
-    
-    print(freqA)
-    #print(freqB)
+    task = nidaqmx.Task()
+    task.di_channels.add_di_chan("Dev1/port1/line1")
+    task.start()
+
+    value = task.read()
+    print(value)
+
+    task.stop
+    task.close()
 
 def PWM(values, motor, runtime):
 
