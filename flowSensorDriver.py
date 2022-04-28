@@ -3,18 +3,31 @@ from nidaqmx.constants import LineGrouping
 import time
 import numpy as np
 
-def dataCollect(values,flowOn,runtime):
+def dataCollect():
     toggle = True
-    while toggle:
-        task_data = nidaqmx.Task()
-        portA = "Dev1/port0/line6" # Counter
-        #portB = "Dev1/port0/line7" # Frequency
-        task_data.ci_channels.add_ci_count_edges_chan(portA,initial_count=0)
-        #task_data.ci_channels.add_ci_count_edges_chan(portB)
+    
+    task_dataA = nidaqmx.Task()
+    portA = "Dev1/ctr0"
+    task_dataA.ci_channels.add_ci_count_edges_chan(portA)
+    freqA = task_dataA.read()
+    task_dataA.stop
+    task_dataA.close()
+    
+    #task_dataB = nidaqmx.Task()
+    #portB = "Dev1/ctr1"
+    #task_dataB.ci_channels.add_ci_count_edges_chan(portB)
+    #freqB = task_dataB.read()
+    #task_dataB.stop
+    #task_dataB.close()
+    
+    print(freqA)
+    #print(freqB)
+    
+def loopData():
+    while True:
+        dataCollect()
 
-        task_data.start()
-        freq = task_data.read(portA)
-        #freq = task_data.read(portB)
-        task_data.close()
+loopData()
 
-    return freq    
+
+        
