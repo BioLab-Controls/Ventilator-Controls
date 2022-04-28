@@ -7,6 +7,10 @@ import transducerDriver as pressure
 
 
 state_sys = 1
+'''
+Code runs the pumps, fills and empties, and records 0s from flow sensor in the terminal.
+Occasionally reports a 1 when filling is complete.
+'''
 
 def dataCollect():
     
