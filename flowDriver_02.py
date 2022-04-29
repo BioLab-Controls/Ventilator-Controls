@@ -2,7 +2,7 @@ import nidaqmx
 
 def dataCollect():
     task = nidaqmx.Task()
-    task.di_channels.add_di_chan("Dev1/port0/line1")
+    task.ci_channels.add_ci_chan("Dev1/port0/line1")
     task.start()
 
     value = task.read()

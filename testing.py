@@ -1,3 +1,4 @@
+from unittest import TestResult
 from wsgiref.simple_server import sys_version
 import time
 import nidaqmx
@@ -8,7 +9,7 @@ def PWM(values, motor, runtime):
 	toggle = True
 	
 	task_PWM = nidaqmx.Task()
-	
+
 	if motor == 0:
 		task_PWM.do_channels.add_do_chan("Dev1/port0/line0")
 	else:
@@ -33,9 +34,12 @@ def PWM(values, motor, runtime):
 			toggle = False
 			task_PWM.stop
 			task_PWM.close()
+while 1:
+	motor = input("Enter motor: ")
 
-motor = input("Enter motor: ")
+	timeD = input("Enter Time: ")
 
-timeD = input("Enter Time: ")
+	time_init = time.time()
 
-PWM(245,motor,timeD)
+	while (time.time() - time_init) <= int(timeD):
+		PWM(245,int(motor),int(timeD))
