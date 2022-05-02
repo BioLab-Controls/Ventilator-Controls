@@ -1,7 +1,8 @@
-data = readmatrix("data.csv");
+data = csvread("data.csv");
 %Separate flow 
-flow_values = data(:,1);
+flow_values = data(1,:);
 %Separate time 
-time_values = data(:,2);
+time_values = data(2,1);
+complete = [1:time_values];
 %Plot values vs time '
-plot(flow_values, time_values);
+plot(flow_values);
