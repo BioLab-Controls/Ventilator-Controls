@@ -45,5 +45,7 @@ except KeyboardInterrupt:
 finally:
     pwm0.stop
     pwm1.stop
+    GPIO.cleanup()
+
 
     
