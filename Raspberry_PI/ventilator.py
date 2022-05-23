@@ -2,7 +2,7 @@ from rpi_hardware_pwm import HardwarePWM as hPWM
 #using this instead of RPi.GPIO due to sPWM instead of hPWM, heard issues of pins not turning off if thats true we'll burn that bridge when we come to it
 import RPi.GPIO as GPIO
 from time import sleep
-
+#Kachow
 #using ssh from VSCode into pi seems to eliminate the missing imports issue... good to know
 
 #some setup
