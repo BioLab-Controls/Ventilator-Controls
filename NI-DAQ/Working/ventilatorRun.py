@@ -34,12 +34,17 @@ def PWM(values, motor, runtime):
 			toggle = False
 			task_PWM.stop
 			task_PWM.close()
-while 1:
-	motor = input("Enter motor: ")
+try:
+	while 1:
+		motor = input("Enter motor: ")
 
-	timeD = input("Enter Time: ")
+		timeD = input("Enter Time: ")
 
-	time_init = time.time()
+		time_init = time.time()
 
-	while (time.time() - time_init) <= int(timeD):
-		PWM(245,int(motor),int(timeD))
+		while (time.time() - time_init) <= int(timeD):
+			PWM(245,int(motor),int(timeD))
+
+except KeyboardInterrupt:
+	print ("Program Terminated")
+
