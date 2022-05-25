@@ -1,6 +1,13 @@
+from tracemalloc import start
 import numpy as np
 import nidaqmx
 from nidaqmx.constants import LineGrouping
+import csv
+import time
+
+pressureAR = []
+timeAR = []
+startTime=time.time()
 
 #setup
 pSenTask = nidaqmx.Task()
@@ -16,19 +23,31 @@ def pressureTransducer():
     #pSenTask.ai_channels.add_ai_voltage_chan(port)
     #pSenTask.start()
     dataIN = pSenTask.read()
-    linearconvertPSIG = np.interp(256,[5,1000],[0,5])
+    elapTime=time.time()-startTime
+    #linearconvertPSIG = np.interp(256,[5,1000],[0,5])
     #Map values using calibration function (to psia)
     calib_convertPSIG = (150.18 * dataIN) + 0.1156
     #convertcmH20 = m * 70.307
     #pSenTask.stop
     #pSenTask.close()
     #print(calib_convertPSIG)
-    return calib_convertPSIG
+    pressureAR.append(calib_convertPSIG)
+    timeAR.append(elapTime)
+
+    return calib_convertPSIG, elapTime
 
 
 def loopData():
+
     while True:
         print(pressureTransducer())
+        updatePres(pressureAR,timeAR)
+
+def updatePres(pdata,tdata):
+    with open('data.csv', 'w', encoding='UTF8') as f:
+        writer = csv.writer(f)
+        writer.writerow(pdata)
+        writer.writerow(tdata)
 
 try:
     loopData()

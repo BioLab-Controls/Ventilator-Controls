@@ -1,0 +1,16 @@
+import csv
+
+pres = []
+t = []
+
+def update(pdata,tdata):
+	pres.append(pdata)
+	t.append(tdata)
+	
+f = open('path/to/csv_file', 'w')
+writer = csv.writer(f)
+
+writer.writerow(pres)
+writer.writerow(t)
+
+f.close()
