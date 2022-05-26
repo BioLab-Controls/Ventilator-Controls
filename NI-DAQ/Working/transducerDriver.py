@@ -7,7 +7,7 @@ import time
 
 pressureAR = []
 timeAR = []
-startTime=time.time()
+
 
 #setup
 pSenTask = nidaqmx.Task()
@@ -27,6 +27,7 @@ def pressureTransducer():
     #linearconvertPSIG = np.interp(256,[5,1000],[0,5])
     #Map values using calibration function (to psia)
     calib_convertPSIG = (150.18 * dataIN) + 0.1156
+    #Das said to use this^
     #convertcmH20 = m * 70.307
     #pSenTask.stop
     #pSenTask.close()
@@ -41,7 +42,7 @@ def loopData():
 
     while True:
         print(pressureTransducer())
-        updatePres(pressureAR,timeAR)
+        
 
 def updatePres(pdata,tdata):
     with open('data.csv', 'w', encoding='UTF8') as f:
@@ -50,11 +51,13 @@ def updatePres(pdata,tdata):
         writer.writerow(tdata)
 
 try:
+    startTime=time.time()
     loopData()
 
 except KeyboardInterrupt:
     print("INTERUPTED")
 
 finally:
+    updatePres(pressureAR,timeAR)
     pSenTask.stop
     pSenTask.close()
