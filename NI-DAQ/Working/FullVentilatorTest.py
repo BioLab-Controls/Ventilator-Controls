@@ -105,6 +105,7 @@ except KeyboardInterrupt:
 finally:
     #plot the data
     plt.scatter(pressureAR,timeAR)
+    plt.title('Pressure Vs. Time')
     plt.ylabel('Time')
     plt.xlabel('Pressure')
     plt.show()
