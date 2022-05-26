@@ -9,48 +9,97 @@ import matplotlib.pyplot as plt
 #from transducerDriver import process
 
 pressureAR = []
-timeAR = []
+pTimeAR = []
 
-#setup
-pSenTask = nidaqmx.Task()
-port = "Dev1/ai0"
-pSenTask.ai_channels.add_ai_voltage_chan(port)
-pSenTask.start()
+flowAR=[]
+fTimeAR=[]
+
+
+#pressure setup
+task_press = nidaqmx.Task()
+pPort = "Dev1/ai0"
+task_press.ai_channels.add_ai_voltage_chan(pPort)
+task_press.start()
+
+#flow setup
+task_flow = nidaqmx.Task()
+fPort = "/Dev1/ctr0"
+task_flow.ci_channels.add_ci_count_edges_chan(fPort)#,initial_count=0)
+task_flow.ci_channels[0].ci_count_edges_term="/Dev1/PFI0"
+task_flow.start()
 
 def pressureTransducer():
+    """
+    This queries for pressure data while the motors are running
+    """
         #Create task 
-        #pSenTask = nidaqmx.Task()
+        #task_press = nidaqmx.Task()
         #IO
-        #port = "Dev1/ai0"
-        #pSenTask.ai_channels.add_ai_voltage_chan(port)
-        #pSenTask.start()
-    dataIN = pSenTask.read()
+        #1 = "Dev1/ai0"
+        #task_press.ai_channels.add_ai_voltage_chan(port)
+        #task_press.start()
+    dataIN = task_press.read()
     elapTime=time.time()-totTimeInit
         #linearconvertPSIG = np.interp(256,[5,1000],[0,5])
         #Map values using calibration function (to psia)
     calib_convertPSIG = (150.18 * dataIN) + 0.1156
         #Das said to use this^
         #convertcmH20 = m * 70.307
-        #pSenTask.stop
-        #pSenTask.close()
+        #task_press.stop
+        #task_press.close()
         #print(calib_convertPSIG)
     pressureAR.append(calib_convertPSIG)
-    timeAR.append(elapTime)
+    pTimeAR.append(elapTime)
+
+    print(calib_convertPSIG,elapTime)
 
     return calib_convertPSIG, elapTime
 
+def flowSense():
+    """
+    Calculates flowrate based on counter. 15000 ticks per gallon,
+    so (ticks/15000)/time is equal to gallons/second
+    """
 
-def loopData():
+    startTime=time.time()
+    freq=[]
 
-    #    while True:
-        print(pressureTransducer())
-            
+    while ((time.time()-startTime)<1): #total time of 1 second
+        freq.append(task_flow.read())
 
-def updatePres(pdata,tdata):
-    with open('data.csv', 'w', encoding='UTF8') as f:
+    ticks=sum(freq)
+    flowRate=(ticks/15000)
+
+    print(flowRate)
+
+    return flowRate
+
+
+def updatePres(filename,pdata,tdata):
+    """
+    Updates the csv file with data acquired. Takes: filename, data, time data
+    """
+    with open(filename, 'w', encoding='UTF8') as f:
         writer = csv.writer(f)
         writer.writerow(pdata)
         writer.writerow(tdata)
+def plot(label,data,timeData):
+    plt.scatter(data,timeData)
+    plt.title(label +' Vs. Time')
+    plt.ylabel('Time')
+    plt.xlabel(label)
+    plt.show()
+
+
+
+def dataCollect():
+    """
+    an umbrella function that strings together data collection functions
+    """
+
+    pressureTransducer()
+
+    flowSense()
 
 def PWM(values, motor, runtime):
 
@@ -70,7 +119,7 @@ def PWM(values, motor, runtime):
 	while toggle:
 		
         
-            loopData()
+            dataCollect()
             for i in range(0, 255):
                 if i < values:
                     task_PWM.write(True)
@@ -84,7 +133,7 @@ def PWM(values, motor, runtime):
             if ((time.time() - time_init) >= runtime):
                 task_PWM.write(False)
                 toggle = False
-                task_PWM.stop
+                task_PWM.stop()
                 task_PWM.close()
 
 try:
@@ -104,14 +153,13 @@ except KeyboardInterrupt:
 
 finally:
     #plot the data
-    plt.scatter(pressureAR,timeAR)
-    plt.title('Pressure Vs. Time')
-    plt.ylabel('Time')
-    plt.xlabel('Pressure')
-    plt.show()
+    plot('Pressure',pressureAR,pTimeAR)
     #update the data.csv
-    updatePres(pressureAR,timeAR)
+    updatePres("PressureData.csv",pressureAR,pTimeAR)
     #kill NI Tasks
-    pSenTask.stop
-    pSenTask.close()
+    task_press.stop()
+    task_press.close()
+
+    task_flow.stop()
+    task_flow.close()
 
