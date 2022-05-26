@@ -55,7 +55,7 @@ try:
     loopData()
 
 except KeyboardInterrupt:
-    print("INTERUPTED")
+    print("INTERRUPTED")
 
 finally:
     updatePres(pressureAR,timeAR)
