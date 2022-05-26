@@ -5,7 +5,7 @@ import numpy as np
 
 toggle = True
 task_data = nidaqmx.Task()
-port = "Dev1/port0/line6"
+port = "Dev1/PFI/line0"
 
 def dataCollect():
     
