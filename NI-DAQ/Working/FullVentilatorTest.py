@@ -51,7 +51,7 @@ def pressureTransducer():
     pressureAR.append(calib_convertPSIG)
     pTimeAR.append(elapTime)
 
-    print(calib_convertPSIG,elapTime)
+    print(calib_convertPSIG)
 
     return calib_convertPSIG, elapTime
 
@@ -70,9 +70,14 @@ def flowSense():
     ticks=sum(freq)
     flowRate=(ticks/15000)
 
+    elapTime=time.time()-totTimeInit
+
+    flowAR.append(flowRate)
+    fTimeAR.append(elapTime)
+
     print(flowRate)
 
-    return flowRate
+    return flowRate, elapTime
 
 
 def updatePres(filename,pdata,tdata):
@@ -154,8 +159,10 @@ except KeyboardInterrupt:
 finally:
     #plot the data
     plot('Pressure',pressureAR,pTimeAR)
-    #update the data.csv
+    plot('Flow',flowAR,fTimeAR)
+    #update the data.csv files
     updatePres("PressureData.csv",pressureAR,pTimeAR)
+    updatePres("FlowData.csv",flowAR,fTimeAR)
     #kill NI Tasks
     task_press.stop()
     task_press.close()
