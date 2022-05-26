@@ -3,6 +3,10 @@ from wsgiref.simple_server import sys_version
 import time
 import nidaqmx
 from nidaqmx.constants import(LineGrouping)
+from numpy import promote_types
+#from transducerDriver import process
+
+totTimeInit=time.time()
 
 def PWM(values, motor, runtime):
 
@@ -20,7 +24,7 @@ def PWM(values, motor, runtime):
 	time_init = time.time()
 	
 	while toggle:
-		
+		#this is here because PWM is broken
 		for i in range(0, 255):
 			if i < values:
 				task_PWM.write(True)
@@ -28,12 +32,15 @@ def PWM(values, motor, runtime):
 				task_PWM.write(False)
 				
 		i = 0
+		#process()
+		#calls the transducer driver junk
 
 		if ((time.time() - time_init) >= runtime):
 			task_PWM.write(False)
 			toggle = False
 			task_PWM.stop
 			task_PWM.close()
+
 try:
 	while 1:
 		motor = input("Enter motor: ")
@@ -47,4 +54,7 @@ try:
 
 except KeyboardInterrupt:
 	print ("Program Terminated")
+
+finally:
+	totalRuntime=time.time()-totTimeInit
 
