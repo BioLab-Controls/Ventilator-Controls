@@ -30,6 +30,7 @@ task_flow.ci_channels[0].ci_count_edges_term="/Dev1/PFI0"
 task_flow.start()
 
 def pressureTransducer():
+    
     """
     This queries for pressure data while the motors are running
     """
@@ -59,6 +60,7 @@ def pressureTransducer():
 
 
 def flowSense():
+
     """
     Calculates flowrate based on counter. 15000 ticks per gallon,
     so (ticks/15000)/time is equal to gallons/second
@@ -85,6 +87,7 @@ def flowSense():
 
 
 def updatePres(filename,pdata,tdata):
+
     """
     Updates the csv file with data acquired. Takes: filename, data, time data
     """
@@ -96,6 +99,7 @@ def updatePres(filename,pdata,tdata):
 
 
 def plot(label,data,timeData):
+
     """
     Plot obtained data
     """
@@ -108,6 +112,7 @@ def plot(label,data,timeData):
 
 
 def dataCollect():
+
     """
     an umbrella function that strings together data collection functions
     """
