@@ -8,20 +8,21 @@ import csv
 import matplotlib.pyplot as plt
 #from transducerDriver import process
 
-pressureAR = []
-pTimeAR = []
-
-flowAR=[]
-fTimeAR=[]
 
 
 #pressure setup
+pressureAR = []
+pTimeAR = []
+
 task_press = nidaqmx.Task()
 pPort = "Dev1/ai0"
 task_press.ai_channels.add_ai_voltage_chan(pPort)
 task_press.start()
 
 #flow setup
+flowAR=[]
+fTimeAR=[]
+
 task_flow = nidaqmx.Task()
 fPort = "/Dev1/ctr0"
 task_flow.ci_channels.add_ci_count_edges_chan(fPort)#,initial_count=0)
@@ -55,6 +56,8 @@ def pressureTransducer():
 
     return calib_convertPSIG, elapTime
 
+
+
 def flowSense():
     """
     Calculates flowrate based on counter. 15000 ticks per gallon,
@@ -80,6 +83,7 @@ def flowSense():
     return flowRate, elapTime
 
 
+
 def updatePres(filename,pdata,tdata):
     """
     Updates the csv file with data acquired. Takes: filename, data, time data
@@ -88,7 +92,13 @@ def updatePres(filename,pdata,tdata):
         writer = csv.writer(f)
         writer.writerow(pdata)
         writer.writerow(tdata)
+
+
+
 def plot(label,data,timeData):
+    """
+    Plot obtained data
+    """
     plt.scatter(data,timeData)
     plt.title(label +' Vs. Time')
     plt.ylabel('Time')
@@ -106,40 +116,45 @@ def dataCollect():
 
     flowSense()
 
+
+
 def PWM(values, motor, runtime):
 
-	toggle = True
-	
-	task_PWM = nidaqmx.Task()
+    """
+    Runs motors using janky PWM function, takes pwm value, motor select (0,1), and time
+    """
 
-	if motor == 0:
-		task_PWM.do_channels.add_do_chan("Dev1/port0/line0")
-	else:
-		task_PWM.do_channels.add_do_chan("Dev1/port0/line1")
-	
-	task_PWM.start()
-	
-	time_init = time.time()
-	
-	while toggle:
-		
+    toggle = True
         
-            dataCollect()
-            for i in range(0, 255):
-                if i < values:
-                    task_PWM.write(True)
-                else:
-                    task_PWM.write(False)
-                    
-            i = 0
-		#process()
-		#calls the transducer driver junk
+    task_PWM = nidaqmx.Task()
 
-            if ((time.time() - time_init) >= runtime):
-                task_PWM.write(False)
-                toggle = False
-                task_PWM.stop()
-                task_PWM.close()
+    if motor == 0:
+        task_PWM.do_channels.add_do_chan("Dev1/port0/line0")
+    else:
+        task_PWM.do_channels.add_do_chan("Dev1/port0/line1")
+        
+    task_PWM.start()
+        
+    time_init = time.time()
+        
+    while toggle:
+        #calls function to collect data		
+        dataCollect()
+        for i in range(0, 255):
+            if i < values:
+                    task_PWM.write(True)
+            else:
+                    task_PWM.write(False)
+                            
+        i = 0
+
+        if ((time.time() - time_init) >= runtime):
+            task_PWM.write(False)
+            toggle = False
+            task_PWM.stop()
+            task_PWM.close()
+
+
 
 try:
     totTimeInit=time.time()
@@ -153,16 +168,22 @@ try:
         while (time.time() - time_init) <= int(timeD):
                 PWM(245,int(motor),int(timeD))
 
+
+
 except KeyboardInterrupt:
 	print ("Program Terminated")
+
+
 
 finally:
     #plot the data
     plot('Pressure',pressureAR,pTimeAR)
     plot('Flow',flowAR,fTimeAR)
+
     #update the data.csv files
     updatePres("PressureData.csv",pressureAR,pTimeAR)
     updatePres("FlowData.csv",flowAR,fTimeAR)
+
     #kill NI Tasks
     task_press.stop()
     task_press.close()
