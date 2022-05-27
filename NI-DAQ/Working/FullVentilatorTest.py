@@ -8,7 +8,8 @@ import csv
 import matplotlib.pyplot as plt
 #from transducerDriver import process
 
-
+#pwm setup
+task_PWM = nidaqmx.Task()
 
 #pressure setup
 pressureAR = []
@@ -71,6 +72,8 @@ def flowSense():
 
     while ((time.time()-startTime)<1): #total time of 1 second
         freq.append(task_flow.read())
+        #KWABENA MADE THIS AND WHOAHHHHHHHHHHH
+        task_PWM.write(True)
 
     ticks=sum(freq)
     flowRate=(ticks/15000)
@@ -131,7 +134,7 @@ def PWM(values, motor, runtime):
 
     toggle = True
         
-    task_PWM = nidaqmx.Task()
+    #task_PWM = nidaqmx.Task()
 
     if motor == 0:
         task_PWM.do_channels.add_do_chan("Dev1/port0/line0")
@@ -176,14 +179,14 @@ try:
 
 
 except KeyboardInterrupt:
-	print ("Program Terminated")
+	print ("\nProgram Terminated")
 
 
 
 finally:
     #plot the data
-    plot('Pressure',pressureAR,pTimeAR)
-    plot('Flow',flowAR,fTimeAR)
+    #plot('Pressure',pressureAR,pTimeAR)
+    #plot('Flow',flowAR,fTimeAR)
 
     #update the data.csv files
     updatePres("PressureData.csv",pressureAR,pTimeAR)
