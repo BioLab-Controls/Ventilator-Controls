@@ -108,8 +108,8 @@ def plot(label,data,timeData):
     """
     plt.scatter(data,timeData)
     plt.title(label +' Vs. Time')
-    plt.ylabel('Time')
-    plt.xlabel(label)
+    plt.xlabel('Time')
+    plt.ylabel(label)
     plt.show()
 
 
@@ -170,7 +170,7 @@ try:
     count=0
 
     while count<len(inst):
-        
+
         motor = inst[count]
 
         timeD = inst[count+1]
@@ -193,7 +193,7 @@ except KeyboardInterrupt:
 
 finally:
     #plot the data
-    #plot('Pressure',pressureAR,pTimeAR)
+    plot('Pressure',pressureAR,pTimeAR)
     plot('Flow',flowAR,fTimeAR)
 
     #update the data.csv files
