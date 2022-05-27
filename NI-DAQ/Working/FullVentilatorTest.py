@@ -106,7 +106,7 @@ def plot(label,data,timeData):
     """
     Plot obtained data
     """
-    plt.scatter(data,timeData)
+    plt.scatter(timeData,data)
     plt.title(label +' Vs. Time')
     plt.xlabel('Time')
     plt.ylabel(label)
