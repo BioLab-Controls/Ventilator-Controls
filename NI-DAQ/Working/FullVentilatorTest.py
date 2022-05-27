@@ -8,8 +8,8 @@ import csv
 import matplotlib.pyplot as plt
 #from transducerDriver import process
 
-#pwm setup
-task_PWM = nidaqmx.Task()
+#instructions for test
+inst=[0,6,1,7]
 
 #pressure setup
 pressureAR = []
@@ -45,22 +45,22 @@ def pressureTransducer():
     elapTime=time.time()-totTimeInit
         #linearconvertPSIG = np.interp(256,[5,1000],[0,5])
         #Map values using calibration function (to psia)
-    calib_convertPSIG = (150.18 * dataIN) + 0.1156
+    #calib_convertPSIG = (150.18 * dataIN) + 0.1156
         #Das said to use this^
         #convertcmH20 = m * 70.307
         #task_press.stop
         #task_press.close()
         #print(calib_convertPSIG)
-    pressureAR.append(calib_convertPSIG)
+    pressureAR.append(dataIN)#calib_convertPSIG)
     pTimeAR.append(elapTime)
 
-    print(calib_convertPSIG)
+    print(dataIN)#calib_convertPSIG)
 
-    return calib_convertPSIG, elapTime
+    return dataIN, elapTime #changed calib to datain
 
 
 
-def flowSense():
+def flowSense(task_PWM):
 
     """
     Calculates flowrate based on counter. 15000 ticks per gallon,
@@ -70,7 +70,7 @@ def flowSense():
     startTime=time.time()
     freq=[]
 
-    while ((time.time()-startTime)<1): #total time of 1 second
+    while ((time.time()-startTime)<0.1): #increased sampling rate
         freq.append(task_flow.read())
         #KWABENA MADE THIS AND WHOAHHHHHHHHHHH
         task_PWM.write(True)
@@ -114,7 +114,7 @@ def plot(label,data,timeData):
 
 
 
-def dataCollect():
+def dataCollect(task_PWM):
 
     """
     an umbrella function that strings together data collection functions
@@ -122,7 +122,7 @@ def dataCollect():
 
     pressureTransducer()
 
-    flowSense()
+    flowSense(task_PWM)
 
 
 
@@ -133,8 +133,7 @@ def PWM(values, motor, runtime):
     """
 
     toggle = True
-        
-    #task_PWM = nidaqmx.Task()
+    task_PWM = nidaqmx.Task()
 
     if motor == 0:
         task_PWM.do_channels.add_do_chan("Dev1/port0/line0")
@@ -147,7 +146,7 @@ def PWM(values, motor, runtime):
         
     while toggle:
         #calls function to collect data		
-        dataCollect()
+        dataCollect(task_PWM)
         for i in range(0, 255):
             if i < values:
                     task_PWM.write(True)
@@ -166,17 +165,26 @@ def PWM(values, motor, runtime):
 
 try:
     totTimeInit=time.time()
-    while 1:
-        motor = input("Enter motor: ")
 
-        timeD = input("Enter Time: ")
+    #index for testing instrucitons
+    count=0
+
+    while count<len(inst):
+        
+        motor = inst[count]
+
+        timeD = inst[count+1]
 
         time_init = time.time()
 
         while (time.time() - time_init) <= int(timeD):
                 PWM(245,int(motor),int(timeD))
+        #if count<len(inst):
+        count +=2 #increment count to iterate through instructions
 
 
+#How long
+#Which motor
 
 except KeyboardInterrupt:
 	print ("\nProgram Terminated")
@@ -186,7 +194,7 @@ except KeyboardInterrupt:
 finally:
     #plot the data
     #plot('Pressure',pressureAR,pTimeAR)
-    #plot('Flow',flowAR,fTimeAR)
+    plot('Flow',flowAR,fTimeAR)
 
     #update the data.csv files
     updatePres("PressureData.csv",pressureAR,pTimeAR)
