@@ -2,14 +2,25 @@
 #from wsgiref.simple_server import sys_version
 import time
 import nidaqmx
-#from nidaqmx.constants import(LineGrouping)
+from nidaqmx.constants import(LineGrouping)
 #from numpy import promote_types
 import csv
 import matplotlib.pyplot as plt
 #from transducerDriver import process
 
 #instructions for test
-inst=[0,6,1,7]
+inst=[1,0,0,7,0,1,1,7,1,0,0,7,0,1,1,7,1,0,0,7,0,1,1,7] #3 cycles
+#New instruction set
+#Index order
+#0 = Valve B, 1 = Valve C, 2 = Pump No, 3 = Time
+#[0,0,0,6]
+#Fill instructions
+#Drain pump = 1
+#Fill pump = 0
+#Fill with air = Valve C Open + Valve B closed
+#[0,1,1,7]
+#Push to patient = Valve B open + Valve C closed
+#[1,0,0,7]
 
 #pressure setup
 pressureAR = []
@@ -29,6 +40,11 @@ fPort = "/Dev1/ctr0"
 task_flow.ci_channels.add_ci_count_edges_chan(fPort)#,initial_count=0)
 task_flow.ci_channels[0].ci_count_edges_term="/Dev1/PFI0"
 task_flow.start()
+
+#valves setup
+task_val = nidaqmx.Task()
+task_val.do_channels.add_do_chan("Dev1/port1/line0:1", line_grouping=LineGrouping.CHAN_PER_LINE)
+task_val.start()
 
 def pressureTransducer():
     
@@ -125,6 +141,9 @@ def dataCollect(task_PWM):
     flowSense(task_PWM)
 
 
+def toggleValves(order):
+    task_val.write(order)
+    
 
 def PWM(values, motor, runtime):
 
@@ -162,8 +181,8 @@ def PWM(values, motor, runtime):
             task_PWM.close()
 
 
-
 try:
+    #Kwabena Edited this so now the instructions take 4 parameters
     totTimeInit=time.time()
 
     #index for testing instrucitons
@@ -171,20 +190,21 @@ try:
 
     while count<len(inst):
 
-        motor = inst[count]
+        motor = inst[count+2]
 
-        timeD = inst[count+1]
+        timeD = inst[count+3]
+
+        
+        valveOrder = [bool(inst(count)),bool(inst(count + 1))]
+        toggleValves(valveOrder)
 
         time_init = time.time()
 
         while (time.time() - time_init) <= int(timeD):
                 PWM(245,int(motor),int(timeD))
-        #if count<len(inst):
-        count +=2 #increment count to iterate through instructions
+       
+        count +=4 #increment count to iterate through instructions
 
-
-#How long
-#Which motor
 
 except KeyboardInterrupt:
 	print ("\nProgram Terminated")
@@ -206,3 +226,6 @@ finally:
 
     task_flow.stop()
     task_flow.close()
+
+    task_val.stop
+    task_val.close()
