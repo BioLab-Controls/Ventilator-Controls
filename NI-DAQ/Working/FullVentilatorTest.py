@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 #from transducerDriver import process
 
 #instructions for test
-inst=[1,0,0,7,0,1,1,7,1,0,0,7,0,1,1,7,1,0,0,7,0,1,1,7] #3 cycles
+inst=[1,0,0,7,0,1,1,7]#,1,0,0,7,0,1,1,7,1,0,0,7,0,1,1,7] #3 cycles
 #New instruction set
 #Index order
 #0 = Valve B, 1 = Valve C, 2 = Pump No, 3 = Time
@@ -195,7 +195,7 @@ try:
         timeD = inst[count+3]
 
         
-        valveOrder = [bool(inst(count)),bool(inst(count + 1))]
+        valveOrder = [bool(inst[count]),bool(inst[count + 1])]
         toggleValves(valveOrder)
 
         time_init = time.time()
@@ -227,5 +227,5 @@ finally:
     task_flow.stop()
     task_flow.close()
 
-    task_val.stop
+    task_val.stop()
     task_val.close()
