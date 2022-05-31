@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 #from transducerDriver import process
 
 #instructions for test
-inst=[1,0,0,7,0,1,1,7]#,1,0,0,7,0,1,1,7,1,0,0,7,0,1,1,7] #3 cycles
+inst=[0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,] #20 cycles
 #New instruction set
 #Index order
 #0 = Valve B, 1 = Valve C, 2 = Pump No, 3 = Time
@@ -18,9 +18,9 @@ inst=[1,0,0,7,0,1,1,7]#,1,0,0,7,0,1,1,7,1,0,0,7,0,1,1,7] #3 cycles
 #Drain pump = 1
 #Fill pump = 0
 #Fill with air = Valve C Open + Valve B closed
-#[0,1,1,7]
+#[1,0,1,7]
 #Push to patient = Valve B open + Valve C closed
-#[1,0,0,7]
+#[0,1,0,7]
 
 #pressure setup
 pressureAR = []
