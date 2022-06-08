@@ -88,7 +88,7 @@ def main():
        
         count +=4 #increment count to iterate through instructions
     
-    killTasks()
+    killTasks(task_val,task_PWM)
     
 
 try:
