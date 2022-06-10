@@ -8,11 +8,34 @@ import csv
 import matplotlib.pyplot as plt
 #from transducerDriver import process
 
+#a.	Breathe normally for five cycles 3 secs = 600 cc.
+#[1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3]
+
+#b.	Inhale as deeply as possible then exhale completely.
+#[1,0,1,8,0,1,0,8]
+
+#a.	Breathe normally for five cycles.
+#[1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3]
+
+
+#Full Set
+#500CC
+#[1,0,1,245,0,1,0,245,1,0,1,245,0,1,0,245,1,0,1,245,0,1,0,245,1,0,1,245,0,1,0,245,1,0,1,8,0,1,0,8,1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3,1,0,1,3,0,1,0,3]
+
+#400CC
+#[1,0,1,2.5,0,1,0,2.5,1,0,1,2.5,0,1,0,2.5,1,0,1,2.5,0,1,0,2.5,1,0,1,2.5,0,1,0,2.5,1,0,1,8,0,1,0,8,1,0,1,2.5,0,1,0,2.5,1,0,1,2.5,0,1,0,2.5,1,0,1,2.5,0,1,0,2.5,1,0,1,2.5,0,1,0,2.5]
+
+#300CC
+#[1,0,1,2,0,1,0,2,1,0,1,2,0,1,0,2,1,0,1,2,0,1,0,2,1,0,1,2,0,1,0,2,1,0,1,8,0,1,0,8,1,0,1,2,0,1,0,2,1,0,1,2,0,1,0,2,1,0,1,2,0,1,0,2,1,0,1,2,0,1,0,2]
+
+#a.	Breathe normally for five cycles 2.5 secs = 500 cc.
+
+
 #instructions for test
 inst=[0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,] #20 cycles
 #New instruction set
 #Index order
-#0 = Valve B, 1 = Valve C, 2 = Pump No, 3 = Time
+#0 = Valve B, 1 = Valve C, 2 = Pump No, 3 = Time, 4 = Speed
 #[0,0,0,6]
 #Fill instructions
 #Drain pump = 1
@@ -145,7 +168,7 @@ def toggleValves(order):
     task_val.write(order)
     
 
-def PWM(values, motor, runtime):
+def PWM(values, motor, runtime,speed):
 
     """
     Runs motors using janky PWM function, takes pwm value, motor select (0,1), and time
@@ -165,8 +188,8 @@ def PWM(values, motor, runtime):
         
     while toggle:
         #calls function to collect data		
-        dataCollect(task_PWM)
-        for i in range(0, 255):
+        #dataCollect(task_PWM)
+        for i in range(0, speed):
             if i < values:
                     task_PWM.write(True)
             else:
@@ -194,6 +217,7 @@ try:
 
         timeD = inst[count+3]
 
+        speed = inst[count+4]
         
         valveOrder = [bool(inst[count]),bool(inst[count + 1])]
         toggleValves(valveOrder)
@@ -201,9 +225,9 @@ try:
         time_init = time.time()
 
         while (time.time() - time_init) <= int(timeD):
-                PWM(245,int(motor),float(timeD))
+                PWM(245,int(motor),float(timeD),int(speed))
        
-        count +=4 #increment count to iterate through instructions
+        count +=5 #increment count to iterate through instructions
 
 
 except KeyboardInterrupt:
