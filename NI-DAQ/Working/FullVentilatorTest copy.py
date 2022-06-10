@@ -36,14 +36,14 @@ inst=[0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,1,0,3,1,0,1,2.5,0,
 #New instruction set
 #Index order
 #0 = Valve B, 1 = Valve C, 2 = Pump No, 3 = Time, 4 = Speed
-#[0,0,0,6]
+#[0,0,0,6,speed]
 #Fill instructions
 #Drain pump = 1
 #Fill pump = 0
 #Fill with air = Valve C Open + Valve B closed
-#[1,0,1,7]
+#[1,0,1,7,speed]
 #Push to patient = Valve B open + Valve C closed
-#[0,1,0,7]
+#[0,1,0,7,speed]
 
 #pressure setup
 pressureAR = []
@@ -237,12 +237,11 @@ except KeyboardInterrupt:
 
 finally:
     #plot the data
-    plot('Pressure',pressureAR,pTimeAR)
-    plot('Flow',flowAR,fTimeAR)
+    ##plot('Flow',flowAR,fTimeAR)
 
     #update the data.csv files
-    updatePres("PressureData.csv",pressureAR,pTimeAR)
-    updatePres("FlowData.csv",flowAR,fTimeAR)
+    #updatePres("PressureData.csv",pressureAR,pTimeAR)
+    #updatePres("FlowData.csv",flowAR,fTimeAR)
 
     #kill NI Tasks
     task_press.stop()
