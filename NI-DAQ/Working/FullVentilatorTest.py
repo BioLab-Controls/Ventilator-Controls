@@ -165,7 +165,7 @@ def PWM(values, motor, runtime):
         
     while toggle:
         #calls function to collect data		
-        dataCollect(task_PWM)
+        #dataCollect(task_PWM)
         for i in range(0, 255):
             if i < values:
                     task_PWM.write(True)
@@ -213,12 +213,12 @@ except KeyboardInterrupt:
 
 finally:
     #plot the data
-    plot('Pressure',pressureAR,pTimeAR)
-    plot('Flow',flowAR,fTimeAR)
+    #plot('Pressure',pressureAR,pTimeAR)
+    #plot('Flow',flowAR,fTimeAR)
 
     #update the data.csv files
-    updatePres("PressureData.csv",pressureAR,pTimeAR)
-    updatePres("FlowData.csv",flowAR,fTimeAR)
+    #updatePres("PressureData.csv",pressureAR,pTimeAR)
+    #updatePres("FlowData.csv",flowAR,fTimeAR)
 
     #kill NI Tasks
     task_press.stop()
