@@ -201,7 +201,7 @@ try:
         time_init = time.time()
 
         while (time.time() - time_init) <= int(timeD):
-                PWM(245,int(motor),int(timeD))
+                PWM(245,int(motor),float(timeD))
        
         count +=4 #increment count to iterate through instructions
 
