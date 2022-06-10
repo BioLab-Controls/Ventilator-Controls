@@ -25,7 +25,7 @@ def PWM(values, motor, runtime):
 	
 	while toggle:
 		#this is here because PWM is broken
-		for i in range(0, 255):
+		for i in range(0, 50):
 			if i < values:
 				task_PWM.write(True)
 			else:
